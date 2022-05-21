@@ -51,12 +51,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("dishwasher-funk", 10)
   }
 }
 
@@ -72,6 +72,8 @@ function findUserObject(users, email, password) {
   for (let user in users) {
     const hashedPassword = users[user].password
     const findEmail = getUserByEmail(email, users)
+    console.log(findEmail)
+    console.log(bcrypt.compareSync(password, hashedPassword))
     if (findEmail && bcrypt.compareSync(password, hashedPassword)) {
       return users[user]
     }
@@ -146,7 +148,8 @@ app.post("/login", (req, res) => {
     return res.send("userNotFound");
   }
   const id = findUser.id;
-  res.cookie("user_id", id);
+  //res.cookie("user_id", id);
+  req.session.user_id = id;
   res.redirect("/urls");
   /*  const user_id = req.body.user_id;
    res.cookie("user_id", user_id);
@@ -237,7 +240,8 @@ app.post("/register", (req, res) => {
     password: hashedPassword
   };
 
-  res.cookie("user_id", id);
+  //res.cookie("user_id", id);
+  req.session.user_id = id;
   res.redirect("/urls")
 })
 
