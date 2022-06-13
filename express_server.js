@@ -140,6 +140,8 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+// added app.post to receive the form submission
+
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   if (email === "" || password === "") {
