@@ -18,7 +18,7 @@ app.use(cookieSession({
 
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+}));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -92,7 +92,7 @@ function generateRandomString() {
   return generateShortLink
 }
 
-
+// added /urls route until line 103
 app.get("/urls", (req, res) => {
 
   if (req.session.user_id) {
