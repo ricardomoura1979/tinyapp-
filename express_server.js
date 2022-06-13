@@ -6,6 +6,8 @@ const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
 const cookieSession = require("cookie-session");
+
+// added body parser to convert the request body from a buffer into string to be read.
 const bodyParser = require("body-parser");
 const { application } = require("express");
 const { getUserByEmail } = require("./helpers")
