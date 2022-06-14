@@ -107,6 +107,7 @@ app.get("/urls", (req, res) => {
 
 });
 
+// added new field to new registers.
 app.get("/urls/new", (req, res) => {
   const user_id = req.session.user_id;
   const user = users[user_id];
@@ -152,13 +153,11 @@ app.post("/login", (req, res) => {
   if (!findUser) {
     return res.send("userNotFound");
   }
+
   const id = findUser.id;
-  //res.cookie("user_id", id);
   req.session.user_id = id;
   res.redirect("/urls");
-  /*  const user_id = req.body.user_id;
-   res.cookie("user_id", user_id);
-   res.redirect("/urls"); */
+  
 
 });
 
@@ -226,13 +225,13 @@ app.get("/register", (req, res) => {
 
 
 
-
+// added register field for future clients and password encryption.
 app.post("/register", (req, res) => {
   const id = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
   if (!email || !password) {
-    // return status code
+    
     res.status(400).send("error when filling the input form");
   };
   if (getUserByEmail(email, users)) {
