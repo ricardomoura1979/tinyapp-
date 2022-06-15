@@ -228,6 +228,7 @@ app.get("/register", (req, res) => {
 
 
 // added register field for future clients and password encryption.
+
 app.post("/register", (req, res) => {
   const id = generateRandomString();
   const email = req.body.email;
@@ -241,7 +242,7 @@ app.post("/register", (req, res) => {
   }
   const hashedPassword = bcrypt.hashSync(password, 10);
   users[id] = {
-    id: id,
+    id: id, 
     email: email,
     password: hashedPassword
   };
