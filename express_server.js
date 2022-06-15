@@ -129,8 +129,9 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+// cookie updated
 app.get("/login", (req, res) => {
-  const templateVars = { user_id: req.session.user_id };
+  const templateVars = { user_id: req.session.user_id }; 
   res.render("login", templateVars);
 });
 
