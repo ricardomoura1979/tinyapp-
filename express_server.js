@@ -210,6 +210,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.send("You are not allowed to perform this action")
 });
 
+//endpoint to returns the registration page template.
 app.get("/register", (req, res) => {
   const user_id = req.session.user_id;
   const user = users[user_id];
