@@ -1,4 +1,4 @@
-//added bcrypt to has all clients password
+//added bcrypt to hash all clients password
 const bcrypt = require('bcryptjs');
 
 // added and declared app below until line 5 to thells the express app to use EJS as its templating engine.
@@ -19,6 +19,8 @@ const bodyParser = require("body-parser");
 
 const { application } = require("express");
 
+
+//module installation - function to take in both the users email and the users database.
 const { getUserByEmail } = require("./helpers")
 
 //const { parseForESLint } = require("babel-eslint");
