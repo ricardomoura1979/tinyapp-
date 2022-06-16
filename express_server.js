@@ -1,14 +1,16 @@
 const bcrypt = require('bcryptjs');
 // added and declared app below until line 5 to thells the express app to use EJS as its templating engine.
-const express = require("express");
-const app = express(); 
+const express = require("express"); // import express framework / library
+const app = express(); // instatiate the express server and we call it app //view engine setup
 const PORT = 8080; // default port 8080
 
-//added cookie-parser to work with cookes to read values from them.
+
 app.set("view engine", "ejs");
+
+// added cookie encryption for the browser to protect client password
 const cookieSession = require("cookie-session");
 
-// added body parser to convert the request body from a buffer into string to be read.
+// added body parser to convert the request body from a buffer into string to be read. Added cookie-parser to work with cookeis to read values from them.
 const bodyParser = require("body-parser");
 const { application } = require("express");
 const { getUserByEmail } = require("./helpers")
@@ -76,8 +78,8 @@ function findUserObject(users, email, password) {
   for (let user in users) {
     const hashedPassword = users[user].password
     const findEmail = getUserByEmail(email, users)
-    console.log(findEmail)
-    console.log(bcrypt.compareSync(password, hashedPassword))
+   console.log(findEmail)
+   console.log(bcrypt.compareSync(password, hashedPassword))
     if (findEmail && bcrypt.compareSync(password, hashedPassword)) {
       return users[user]
     }
