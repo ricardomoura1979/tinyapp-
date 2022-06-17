@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 // added and declared app below until line 5 to tell the express app to use EJS as its templating engine.
 const express = require("express"); // import express framework / library
 
-const app = express(); // instatiate the express server and we call it app //view engine setup
+const app = express(); // instatiate the express server and we call it app //view engine setup 
 
 const PORT = 8080; // default port 8080
 
