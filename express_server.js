@@ -1,7 +1,7 @@
 //added bcrypt to hash all clients password
 const bcrypt = require('bcryptjs');
 
-// added and declared app below until line 5 to thells the express app to use EJS as its templating engine.
+// added and declared app below until line 5 to tell the express app to use EJS as its templating engine.
 const express = require("express"); // import express framework / library
 
 const app = express(); // instatiate the express server and we call it app //view engine setup
@@ -17,7 +17,7 @@ const cookieSession = require("cookie-session");
 // added body parser to convert the request body from a buffer into string to be read. Added cookie-parser to work with cookeis to read values from them.
 const bodyParser = require("body-parser");
 
-const { application } = require("express");
+//const { application } = require("express");
 
 
 //module installation - function to take in both the users email and the users database.
@@ -35,10 +35,6 @@ app.use(cookieSession({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-/* const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-}; */
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
@@ -46,10 +42,10 @@ const urlDatabase = {
   },
   i3BoGr: {
     longURL: "https://www.google.com",
-    userID: "aJ48lW"
+    userID: "a1"
   }
 };
-
+/* 
 function urlsForUser(id) {
   let userURL = {}
   for (let shortURL in urlDatabase) {
@@ -58,14 +54,14 @@ function urlsForUser(id) {
     };
   };
 
-};
+}; */
 
 
 const users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
+  "a1": {
+    id: "a1",
+    email: "a@a.com",
+    password: bcrypt.hashSync("123456", 10)
   },
   "user2RandomID": {
     id: "user2RandomID",
@@ -86,8 +82,8 @@ function findUserObject(users, email, password) {
   for (let user in users) {
     const hashedPassword = users[user].password
     const findEmail = getUserByEmail(email, users)
-   console.log(findEmail)
-   console.log(bcrypt.compareSync(password, hashedPassword))
+    console.log(findEmail)
+    console.log(bcrypt.compareSync(password, hashedPassword))
     if (findEmail && bcrypt.compareSync(password, hashedPassword)) {
       return users[user]
     }
@@ -118,7 +114,7 @@ app.get("/urls", (req, res) => {
 
 });
 
-// added new field to new registers.
+// added new field to new registers. 
 app.get("/urls/new", (req, res) => {
   const user_id = req.session.user_id;
   const user = users[user_id];
@@ -135,13 +131,26 @@ app.get("/urls/:shortURL", (req, res) => {
   if (!userID) {
     res.send("You are not allowed to access this page")
   }
+
+  const shortUrl = req.params.shortURL;
+  const urlObj = urlDatabase[shortUrl];
+
+  if (!urlObj) {
+    res.send("URL is not valid!");
+  }
+
+  if (urlObj.userID !== userID) {
+    res.send("Permission Denied!")
+  }
+
+
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user_id: req.session.user_id };
   res.render("urls_show", templateVars);
 });
 
 // cookie updated
 app.get("/login", (req, res) => {
-  const templateVars = { user_id: req.session.user_id }; 
+  const templateVars = { user_id: req.session.user_id };
   res.render("login", templateVars);
 });
 
@@ -169,12 +178,13 @@ app.post("/login", (req, res) => {
   const id = findUser.id;
   req.session.user_id = id;
   res.redirect("/urls");
-  
+
 
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  //res.clearCookie("user_id");
+  req.session = null;
   res.redirect("/urls");
 });
 
@@ -209,16 +219,20 @@ app.post("/urls/:id", (req, res) => {
     res.redirect("/urls");
   }
 
-})
+});
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const userID = req.session.user_id;
-  const shortURL = req.params.shortURL;
-  if (userID && userID === urlDatabase[shortURL].userID) {
-    delete urlDatabase[shortURL];
-
+  const user = req.session.user;
+  const userID = getUserByEmail(user, urlDatabase);
+  const userTemp = { userID, urlDatabase };
+  if (!user) {
+    return res.send("You don't have permission to Delete!")
   }
-  res.send("You are not allowed to perform this action")
+
+  const shortURL = req.params.shortURL;
+  delete urlDatabase[shortURL];
+  res.redirect("/urls", userTemp);
+
 });
 
 //endpoint to returns the registration page template.
@@ -245,7 +259,7 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   if (!email || !password) {
-    
+
     res.status(400).send("error when filling the input form");
   };
   if (getUserByEmail(email, users)) {
@@ -253,7 +267,7 @@ app.post("/register", (req, res) => {
   }
   const hashedPassword = bcrypt.hashSync(password, 10);
   users[id] = {
-    id: id, 
+    id: id,
     email: email,
     password: hashedPassword
   };
