@@ -6,7 +6,7 @@ const express = require("express"); // import express framework / library
 
 const app = express(); // instatiate the express server and we call it app //view engine setup 
 
-const PORT = 8080; // default port 8080
+const PORT = 8080; // default port 8080.
 
 
 app.set("view engine", "ejs");
