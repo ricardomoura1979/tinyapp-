@@ -11,10 +11,10 @@ const PORT = 8080; // default port 8080.
 
 app.set("view engine", "ejs");
 
-// added cookie encryption for the browser to protect client password
+// added cookie encryption for the browser to protect client password.
 const cookieSession = require("cookie-session");
 
-// added body parser to convert the request body from a buffer into string to be read. Added cookie-parser to work with cookeis to read values from them.
+// added body parser to convert the request body from a buffer into string to be read. Added cookie-parser to work with cookies to read values from them.
 const bodyParser = require("body-parser");
 
 //const { application } = require("express");
