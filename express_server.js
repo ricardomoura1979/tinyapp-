@@ -249,7 +249,7 @@ app.get("/register", (req, res) => {
 
 });  
 
-
+ 
 
 
 // added register field for future clients and password encryption.
