@@ -11,14 +11,17 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if (user_id){%>
+    <% if (user){%>
       <span>
-        Logged in As: <%=user_id%>
+        Logged in As: <%=user.email%>
       </span>
       <form method="POST" action="/logout">
        <button type="submit">Log Out</button>
       </form>
-      <%} else {%>
+    
+      <%}%>
+      <% if (!user){%> 
+
       <a href="/login">Login</a>&nbsp; <!-- added login form to login new and old clients-->
       <a href="/register">Register</a>
       <%}%> 
