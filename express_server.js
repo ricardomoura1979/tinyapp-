@@ -45,7 +45,7 @@ const urlDatabase = {
     userID: "a1"
   }
 };
-/* 
+
 function urlsForUser(id) {
   let userURL = {}
   for (let shortURL in urlDatabase) {
@@ -53,8 +53,8 @@ function urlsForUser(id) {
       userURL[shortURL] = urlDatabase[shortURL];
     };
   };
-
-}; */
+  return userURL
+};
 
 
 const users = {
@@ -68,7 +68,7 @@ const users = {
     email: "user2@example.com",
     password: bcrypt.hashSync("dishwasher-funk", 10)
   }
-}
+};
 
 /* function getUserByEmail(email) {
   for (let item in users) {
@@ -105,7 +105,10 @@ function generateRandomString() {
 app.get("/urls", (req, res) => {
 
   if (req.session.user_id) {
-    const templateVars = { urls: urlDatabase, user_id: req.session.user_id };
+    const user_id = req.session.user_id;
+    const user = users[user_id];
+    const userUrls = urlsForUser (user_id);
+    const templateVars = { urls: userUrls, user };
     res.render("urls_index", templateVars);
   } else {
     res.redirect("/register");
@@ -122,12 +125,13 @@ app.get("/urls/new", (req, res) => {
     res.redirect("/login");
     return;
   }
-  const templateVars = { user_id: req.session.user_id }
+  const templateVars = { user }
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const userID = req.session.user_id;
+  const user = users[userID];
   if (!userID) {
     res.send("You are not allowed to access this page")
   }
@@ -144,13 +148,15 @@ app.get("/urls/:shortURL", (req, res) => {
   }
 
 
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user_id: req.session.user_id };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user };
   res.render("urls_show", templateVars);
 });
 
 // cookie updated
 app.get("/login", (req, res) => {
-  const templateVars = { user_id: req.session.user_id };
+  const userID = req.session.user_id;
+  const user = users[userID];
+  const templateVars = { user };
   res.render("login", templateVars);
 });
 
@@ -222,16 +228,16 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const user = req.session.user;
-  const userID = getUserByEmail(user, urlDatabase);
-  const userTemp = { userID, urlDatabase };
-  if (!user) {
-    return res.send("You don't have permission to Delete!")
-  }
-
+  const userID = req.session.user_id;
+  const user = users[userID];
   const shortURL = req.params.shortURL;
+  const urlObject = urlDatabase[shortURL]
+
+  if (!user || !urlObject || urlObject.userID !== userID) {
+    return res.send("You don't have permission to Delete!")
+  } 
   delete urlDatabase[shortURL];
-  res.redirect("/urls", userTemp);
+  res.redirect("/urls");
 
 });
 
@@ -243,13 +249,13 @@ app.get("/register", (req, res) => {
     res.redirect("/urls");
     return;
   }
-  const templateVars = { urls: urlDatabase, user_id: req.session.user_id };
+  const templateVars = { urls: urlDatabase, user:{} };
   res.render("register", templateVars);
 
 
-});   
- 
- 
+});
+
+
 
 
 // added register field for future clients and password encryption.
