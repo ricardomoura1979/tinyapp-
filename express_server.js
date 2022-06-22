@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 // added and declared app below until line 5 to tell the express app to use EJS as its templating engine.
 const express = require("express"); // import express framework / library
 
+const { urlsForUser, urlDatabase, users, findUserObject, generateRandomString } = require('./helpers');
+
 const app = express(); // instatiate the express server and we call it app //view engine setup 
 
 const PORT = 8080; // default port 8080.
@@ -35,71 +37,6 @@ app.use(cookieSession({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "aJ48lW"
-  },
-  i3BoGr: {
-    longURL: "https://www.google.com",
-    userID: "a1"
-  }
-};
-
-function urlsForUser(id) {
-  let userURL = {}
-  for (let shortURL in urlDatabase) {
-    if (urlDatabase[shortURL].userID === id) {
-      userURL[shortURL] = urlDatabase[shortURL];
-    };
-  };
-  return userURL
-};
-
-
-const users = {
-  "a1": {
-    id: "a1",
-    email: "a@a.com",
-    password: bcrypt.hashSync("123456", 10)
-  },
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: bcrypt.hashSync("dishwasher-funk", 10)
-  }
-};
-
-/* function getUserByEmail(email) {
-  for (let item in users) {
-    if (email === users[item].email) {
-      return true;
-    };
-  } return false;
-} */
-
-function findUserObject(users, email, password) {
-  for (let user in users) {
-    const hashedPassword = users[user].password
-    const findEmail = getUserByEmail(email, users)
-    console.log(findEmail)
-    console.log(bcrypt.compareSync(password, hashedPassword))
-    if (findEmail && bcrypt.compareSync(password, hashedPassword)) {
-      return users[user]
-    }
-  }
-  return false
-};
-
-function generateRandomString() {
-  let generateShortLink = "";
-  let options = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < 6; i++) {
-    generateShortLink += options.charAt(Math.random() * options.length)
-
-  }
-  return generateShortLink
-}
 
 // added /urls route until line 103
 app.get("/urls", (req, res) => {
