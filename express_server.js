@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 // added and declared app below until line 5 to tell the express app to use EJS as its templating engine.
 const express = require("express"); // import express framework / library
 
-const { urlsForUser, urlDatabase, users, findUserObject, generateRandomString } = require('./helpers');
+const { urlsForUser, getUserByEmail, findUserObject, generateRandomString } = require('./helpers');
 
 const app = express(); // instatiate the express server and we call it app //view engine setup 
 
@@ -19,11 +19,31 @@ const cookieSession = require("cookie-session");
 // added body parser to convert the request body from a buffer into string to be read. Added cookie-parser to work with cookies to read values from them.
 const bodyParser = require("body-parser");
 
+
 //const { application } = require("express");
+const urlDatabase = {
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW"
+  },
+  i3BoGr: {
+    longURL: "https://www.google.com",
+    userID: "a1"
+  }
+};
 
-
-//module installation - function to take in both the users email and the users database.
-const { getUserByEmail } = require("./helpers")
+const users = {
+  "a1": {
+    id: "a1",
+    email: "a@a.com",
+    password: bcrypt.hashSync("123456", 10)
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: bcrypt.hashSync("dishwasher-funk", 10)
+  }
+};
 
 //const { parseForESLint } = require("babel-eslint");
 
@@ -37,6 +57,16 @@ app.use(cookieSession({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/", (req, res) => {
+  res.redirect("/urls");
+
+
+
+})
+
+
+
+
 
 // added /urls route until line 103
 app.get("/urls", (req, res) => {
@@ -44,7 +74,7 @@ app.get("/urls", (req, res) => {
   if (req.session.user_id) {
     const user_id = req.session.user_id;
     const user = users[user_id];
-    const userUrls = urlsForUser (user_id);
+    const userUrls = urlsForUser (user_id, urlDatabase);
     const templateVars = { urls: userUrls, user };
     res.render("urls_index", templateVars);
   } else {
@@ -186,7 +216,7 @@ app.get("/register", (req, res) => {
     res.redirect("/urls");
     return;
   }
-  const templateVars = { urls: urlDatabase, user:{} };
+  const templateVars = { urls: urlDatabase, user: user };
   res.render("register", templateVars);
 
 
