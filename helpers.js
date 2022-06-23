@@ -1,4 +1,7 @@
-function urlsForUser(id) {
+const bcrypt = require('bcryptjs');
+
+
+function urlsForUser(id, urlDatabase) {
   let userURL = {}
   for (let shortURL in urlDatabase) {
     if (urlDatabase[shortURL].userID === id) {
@@ -8,29 +11,14 @@ function urlsForUser(id) {
   return userURL
 };
 
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "aJ48lW"
-  },
-  i3BoGr: {
-    longURL: "https://www.google.com",
-    userID: "a1"
-  }
-};
+function getUserByEmail(email, users) {
+  for (let item in users) {
+    if (email === users[item].email) {
+      return true;
+    };
+  } return false;
+}
 
-const users = {
-  "a1": {
-    id: "a1",
-    email: "a@a.com",
-    password: bcrypt.hashSync("123456", 10)
-  },
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: bcrypt.hashSync("dishwasher-funk", 10)
-  }
-};
 function findUserObject(users, email, password) {
   for (let user in users) {
     const hashedPassword = users[user].password
@@ -54,6 +42,6 @@ function generateRandomString() {
   return generateShortLink
 }
 
-module.exports = { urlsForUser, urlDatabase, users, findUserObject, generateRandomString }
+module.exports = { urlsForUser, getUserByEmail, findUserObject, generateRandomString }
 
- 
+
